@@ -1,0 +1,543 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>可爱卡通圣诞树</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background:
+        radial-gradient(circle at top, #4cc9f0 0, #3a0ca3 45%, #03071e 100%);
+      overflow: hidden;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    .scene {
+      position: relative;
+      width: 420px;
+      height: 620px;
+    }
+
+    /* 夜空柔光 */
+    .scene::before {
+      content: "";
+      position: absolute;
+      inset: -40px;
+      background:
+        radial-gradient(circle at 20% 10%, rgba(255,255,255,0.2), transparent 55%),
+        radial-gradient(circle at 80% 0, rgba(255,255,255,0.12), transparent 50%);
+      mix-blend-mode: screen;
+      pointer-events: none;
+    }
+
+    /* 飘雪 */
+    .snowflake {
+      position: absolute;
+      top: -10px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.95);
+      filter: blur(0.5px);
+      animation: fall linear infinite;
+    }
+
+    @keyframes fall {
+      0%   { transform: translate3d(var(--x, 0px), -20px, 0); opacity: 0; }
+      15%  { opacity: 1; }
+      100% { transform: translate3d(var(--x, 0px), 650px, 0); opacity: 0; }
+    }
+
+    /* 地面雪坡 */
+    .snow-ground {
+      position: absolute;
+      left: -60px;
+      right: -60px;
+      bottom: -80px;
+      height: 220px;
+      background:
+        radial-gradient(circle at 50% 0, #ffffff 0, #e0f2ff 55%, transparent 70%);
+      border-radius: 50% 50% 0 0;
+      filter: drop-shadow(0 0 16px rgba(0,0,0,0.5));
+    }
+
+    /* 圣诞树整体 */
+    .tree-wrapper {
+      position: absolute;
+      bottom: 110px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 260px;
+      height: 360px;
+    }
+
+    .tree-layer {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      border-left: 0 solid transparent;
+      border-right: 0 solid transparent;
+      border-bottom-style: solid;
+      border-bottom-color: #058c42;
+      filter: drop-shadow(0 10px 8px rgba(0,0,0,0.55));
+    }
+
+    .tree-layer:nth-child(1) {
+      bottom: 220px;
+      border-width: 0 65px 110px;
+      border-bottom-color: #60d394;
+    }
+
+    .tree-layer:nth-child(2) {
+      bottom: 140px;
+      border-width: 0 90px 120px;
+      border-bottom-color: #3cb371;
+    }
+
+    .tree-layer:nth-child(3) {
+      bottom: 50px;
+      border-width: 0 115px 130px;
+      border-bottom-color: #058c42;
+    }
+
+    /* 树干 */
+    .trunk {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 58px;
+      height: 80px;
+      background: #7f4f24;
+      border-radius: 12px;
+      box-shadow:
+        inset 0 0 4px rgba(0,0,0,0.35),
+        0 4px 8px rgba(0,0,0,0.7);
+    }
+
+    /* 树干上的彩灯轨迹 */
+    .trunk::before {
+      content: "";
+      position: absolute;
+      inset: 6px 4px;
+      border-radius: 16px;
+      border: 3px dashed rgba(255,255,255,0.4);
+      opacity: 0.7;
+    }
+
+    /* 顶部星光 */
+    .top-star {
+      position: absolute;
+      bottom: 310px;
+      left: 50%;
+      transform: translateX(-50%) rotate(10deg);
+      width: 52px;
+      height: 52px;
+      background: radial-gradient(circle at 30% 30%, #fff9c4, #ffd166 40%, #ff9e00 70%);
+      clip-path: polygon(50% 0, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+      box-shadow:
+        0 0 20px rgba(255, 221, 87, 0.9),
+        0 0 40px rgba(255, 221, 87, 0.6);
+      animation: starGlow 2.5s ease-in-out infinite alternate;
+    }
+
+    @keyframes starGlow {
+      0% { transform: translateX(-50%) rotate(10deg) scale(1); opacity: 0.9; }
+      100% { transform: translateX(-50%) rotate(5deg) scale(1.1); opacity: 1; }
+    }
+
+    /* 彩灯泡 */
+    .bulb {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #fff, var(--color));
+      box-shadow: 0 0 10px var(--color);
+      animation: twinkle 1.8s ease-in-out infinite alternate;
+    }
+
+    @keyframes twinkle {
+      0% { transform: scale(0.8); opacity: 0.4; box-shadow: 0 0 4px var(--color); }
+      40% { opacity: 1; }
+      100% { transform: scale(1.4); opacity: 0.9; box-shadow: 0 0 14px var(--color); }
+    }
+
+    /* 彩球装饰 */
+    .ball {
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 20%, #fff8e1, var(--base));
+      box-shadow: 0 0 8px rgba(0,0,0,0.5);
+    }
+
+    /* 拐杖糖 */
+    .cane {
+      position: absolute;
+      width: 10px;
+      height: 30px;
+      background: repeating-linear-gradient(
+        135deg,
+        #ff4d6d 0,
+        #ff4d6d 4px,
+        #ffffff 4px,
+        #ffffff 8px
+      );
+      border-radius: 20px;
+      transform-origin: center top;
+      transform: rotate(18deg);
+      box-shadow: 0 0 6px rgba(0,0,0,0.4);
+    }
+
+    .cane::before {
+      content: "";
+      position: absolute;
+      top: -12px;
+      left: -8px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 10px solid transparent;
+      border-top-color: #ff4d6d;
+      border-left-color: #ff4d6d;
+      transform: rotate(-45deg);
+      box-sizing: content-box;
+    }
+
+    /* 丝带（弧形彩带） */
+    .ribbon {
+      position: absolute;
+      width: 120px;
+      height: 32px;
+      border-radius: 50%;
+      border: 5px solid transparent;
+      border-top-color: rgba(255, 255, 255, 0.85);
+      border-left-color: rgba(255, 105, 180, 0.8);
+      border-right-color: rgba(255, 215, 0, 0.85);
+      transform: rotate(var(--deg, -10deg));
+      opacity: 0.95;
+      mix-blend-mode: screen;
+    }
+
+    /* 礼物盒 */
+    .gift {
+      position: absolute;
+      width: 40px;
+      height: 32px;
+      background: var(--gift-color, #ffbe0b);
+      border-radius: 6px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.7);
+    }
+
+    .gift::before,
+    .gift::after {
+      content: "";
+      position: absolute;
+      background: rgba(255,255,255,0.9);
+    }
+
+    .gift::before {
+      inset: 0 44% 0 44%;
+    }
+
+    .gift::after {
+      inset: 33% 0 33% 0;
+    }
+
+    .gift-top {
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 30px;
+      height: 10px;
+      background: var(--gift-color, #ffbe0b);
+      border-radius: 8px 8px 4px 4px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    }
+
+    .gift-top::before,
+    .gift-top::after {
+      content: "";
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.95);
+    }
+
+    .gift-top::before {
+      left: -3px;
+      top: -3px;
+    }
+
+    .gift-top::after {
+      right: -3px;
+      top: -3px;
+    }
+
+    /* 小朋友 */
+    .kids {
+      position: absolute;
+      bottom: 70px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 320px;
+      height: 120px;
+    }
+
+    .kid {
+      position: absolute;
+      width: 70px;
+      height: 100px;
+    }
+
+    .kid-head {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #ffe0bd;
+      box-shadow: 0 2px 3px rgba(0,0,0,0.3);
+    }
+
+    .kid-hair {
+      position: absolute;
+      top: -2px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 34px;
+      height: 20px;
+      border-radius: 40px 40px 12px 12px;
+      background: var(--hair, #ff9e00);
+    }
+
+    .kid-face {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 26px;
+      height: 16px;
+      border-radius: 10px;
+      background: transparent;
+      display: flex;
+      justify-content: space-between;
+      padding: 0 4px;
+      font-size: 8px;
+    }
+
+    .kid-face span {
+      display: block;
+    }
+
+    .kid-body {
+      position: absolute;
+      top: 34px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 44px;
+      height: 44px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, var(--body1, #ff6b6b), var(--body2, #ff8fab));
+      box-shadow: 0 3px 6px rgba(0,0,0,0.45);
+    }
+
+    .kid-body::before,
+    .kid-body::after {
+      content: "";
+      position: absolute;
+      bottom: -12px;
+      width: 12px;
+      height: 22px;
+      border-radius: 10px;
+      background: #fff;
+    }
+
+    .kid-body::before {
+      left: 4px;
+    }
+
+    .kid-body::after {
+      right: 4px;
+    }
+
+    .kid-arm {
+      position: absolute;
+      top: 40px;
+      width: 20px;
+      height: 10px;
+      border-radius: 10px;
+      background: var(--body1, #ff6b6b);
+    }
+
+    .kid-arm.left {
+      left: 0;
+      transform: rotate(-18deg);
+      transform-origin: right center;
+    }
+
+    .kid-arm.right {
+      right: 0;
+      transform: rotate(18deg);
+      transform-origin: left center;
+    }
+
+    .kid-balloon {
+      position: absolute;
+      top: -10px;
+      left: 65px;
+      width: 26px;
+      height: 34px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 20%, #fff, #ffbe0b);
+      box-shadow: 0 0 10px rgba(255,190,11,0.9);
+      animation: balloon 3s ease-in-out infinite alternate;
+    }
+
+    .kid-balloon::before {
+      content: "";
+      position: absolute;
+      bottom: -16px;
+      left: 50%;
+      width: 2px;
+      height: 18px;
+      transform: translateX(-50%);
+      background: rgba(255,255,255,0.8);
+    }
+
+    @keyframes balloon {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-8px); }
+    }
+
+    /* 前景星光小点 */
+    .sparkle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.9);
+      box-shadow: 0 0 8px rgba(255,255,255,0.9);
+      opacity: 0.9;
+    }
+  </style>
+</head>
+<body>
+  <div class="scene" aria-label="可爱卡通圣诞树插画">
+    <!-- 飘雪 -->
+    <div class="snowflake" style="left: 10%; animation-duration: 9s; --x: -16px;"></div>
+    <div class="snowflake" style="left: 24%; animation-duration: 12s; animation-delay: 1s; --x: 12px;"></div>
+    <div class="snowflake" style="left: 40%; animation-duration: 10s; animation-delay: 2s; --x: -8px;"></div>
+    <div class="snowflake" style="left: 55%; animation-duration: 13s; animation-delay: 0.5s; --x: 18px;"></div>
+    <div class="snowflake" style="left: 70%; animation-duration: 8s; animation-delay: 3s; --x: -20px;"></div>
+    <div class="snowflake" style="left: 84%; animation-duration: 11s; animation-delay: 1.8s; --x: 6px;"></div>
+    <div class="snowflake" style="left: 18%; animation-duration: 14s; animation-delay: 4s; --x: -10px;"></div>
+    <div class="snowflake" style="left: 62%; animation-duration: 9s; animation-delay: 2.4s; --x: 14px;"></div>
+    <div class="snowflake" style="left: 48%; animation-duration: 15s; animation-delay: 5s; --x: -12px;"></div>
+    <div class="snowflake" style="left: 33%; animation-duration: 10s; animation-delay: 6s; --x: 4px;"></div>
+
+    <!-- 圣诞树 -->
+    <div class="tree-wrapper">
+      <div class="top-star"></div>
+
+      <div class="tree-layer"></div>
+      <div class="tree-layer"></div>
+      <div class="tree-layer"></div>
+
+      <div class="trunk"></div>
+
+      <!-- 丝带 -->
+      <div class="ribbon" style="--deg:-16deg; bottom: 222px; left: 48%;"></div>
+      <div class="ribbon" style="--deg:12deg; bottom: 158px; left: 51%; width: 130px;"></div>
+      <div class="ribbon" style="--deg:-8deg; bottom: 95px; left: 49%; width: 140px;"></div>
+
+      <!-- 发光灯泡（均匀分布） -->
+      <div class="bulb" style="--color:#ff4d6d; bottom: 255px; left: 38%; animation-delay:0.2s;"></div>
+      <div class="bulb" style="--color:#4cc9f0; bottom: 245px; left: 60%; animation-delay:1.1s;"></div>
+      <div class="bulb" style="--color:#ffd166; bottom: 230px; left: 48%; animation-delay:0.5s;"></div>
+      <div class="bulb" style="--color:#b5179e; bottom: 205px; left: 34%; animation-delay:1.3s;"></div>
+      <div class="bulb" style="--color:#ff9e00; bottom: 195px; left: 63%; animation-delay:0.6s;"></div>
+      <div class="bulb" style="--color:#4cc9f0; bottom: 170px; left: 42%; animation-delay:1.4s;"></div>
+      <div class="bulb" style="--color:#ff4d6d; bottom: 158px; left: 65%; animation-delay:0.8s;"></div>
+      <div class="bulb" style="--color:#b5179e; bottom: 135px; left: 36%; animation-delay:1.6s;"></div>
+      <div class="bulb" style="--color:#ffd166; bottom: 122px; left: 59%; animation-delay:0.4s;"></div>
+      <div class="bulb" style="--color:#4cc9f0; bottom: 105px; left: 46%; animation-delay:1.8s;"></div>
+      <div class="bulb" style="--color:#ff9e00; bottom: 92px; left: 67%; animation-delay:0.9s;"></div>
+      <div class="bulb" style="--color:#ff4d6d; bottom: 80px; left: 32%; animation-delay:1.2s;"></div>
+
+      <!-- 彩球装饰 -->
+      <div class="ball" style="--base:#ff6b6b; bottom: 235px; left: 30%;"></div>
+      <div class="ball" style="--base:#ffd166; bottom: 218px; left: 69%;"></div>
+      <div class="ball" style="--base:#4dabf7; bottom: 190px; left: 52%;"></div>
+      <div class="ball" style="--base:#b197fc; bottom: 176px; left: 40%;"></div>
+      <div class="ball" style="--base:#ff9f1c; bottom: 150px; left: 28%;"></div>
+      <div class="ball" style="--base:#2ec4b6; bottom: 142px; left: 70%;"></div>
+      <div class="ball" style="--base:#ff6b6b; bottom: 118px; left: 53%;"></div>
+      <div class="ball" style="--base:#ffb3c1; bottom: 102px; left: 38%;"></div>
+
+      <!-- 拐杖糖 -->
+      <div class="cane" style="bottom: 210px; left: 44%;"></div>
+      <div class="cane" style="bottom: 170px; left: 58%; transform: rotate(-18deg);"></div>
+      <div class="cane" style="bottom: 125px; left: 47%;"></div>
+
+      <!-- 礼物盒 -->
+      <div class="gift" style="--gift-color:#ffbe0b; bottom: 12px; left: 32%;">
+        <div class="gift-top"></div>
+      </div>
+      <div class="gift" style="--gift-color:#3a86ff; bottom: 12px; left: 60%;">
+        <div class="gift-top"></div>
+      </div>
+      <div class="gift" style="--gift-color:#ff006e; bottom: 4px; left: 46%; transform: scale(0.9);">
+        <div class="gift-top"></div>
+      </div>
+    </div>
+
+    <!-- 小朋友们 -->
+    <div class="kids" aria-label="在圣诞树周围玩耍的孩子们">
+      <div class="kid" style="left: 12%; --hair:#ff9e00; --body1:#ff6b6b; --body2:#ff8fab;">
+        <div class="kid-hair"></div>
+        <div class="kid-head"></div>
+        <div class="kid-face"><span>◕</span><span>◕</span></div>
+        <div class="kid-body"></div>
+        <div class="kid-arm left"></div>
+        <div class="kid-arm right"></div>
+      </div>
+
+      <div class="kid" style="left: 58%; --hair:#4361ee; --body1:#00bbf9; --body2:#48cae4;">
+        <div class="kid-hair"></div>
+        <div class="kid-head"></div>
+        <div class="kid-face"><span>•</span><span>•</span></div>
+        <div class="kid-body"></div>
+        <div class="kid-arm left"></div>
+        <div class="kid-arm right"></div>
+        <div class="kid-balloon"></div>
+      </div>
+    </div>
+
+    <!-- 前景小亮点 -->
+    <div class="sparkle" style="top: 40px; left: 15%;"></div>
+    <div class="sparkle" style="top: 90px; left: 78%;"></div>
+    <div class="sparkle" style="top: 160px; left: 22%;"></div>
+    <div class="sparkle" style="top: 210px; left: 84%;"></div>
+
+    <!-- 地面雪 -->
+    <div class="snow-ground"></div>
+  </div>
+</body>
+</html>
